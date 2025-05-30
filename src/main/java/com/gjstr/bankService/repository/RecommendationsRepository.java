@@ -8,41 +8,41 @@ import java.util.UUID;
 
 @Repository
 public class RecommendationsRepository {
+
     private final JdbcTemplate jdbcTemplate;
 
     public RecommendationsRepository(@Qualifier("recommendationsJdbcTemplate") JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    // Сумма пополнений (DEPOSIT) по типу продукта
     public int getDepositSumByProductType(UUID userId, String productType) {
         String sql = """
-            SELECT COALESCE(SUM(t.amount), 0)
-            FROM transactions t
-            JOIN products p ON t.product_id = p.id
-            WHERE t.user_id = ? AND t."TYPE" = 'DEPOSIT' AND p.type = ?
+            SELECT COALESCE(SUM(amount), 0)
+            FROM transactions
+            WHERE user_id = ? AND transaction_type = 'DEPOSIT' AND product_type = ?
         """;
         return jdbcTemplate.queryForObject(sql, Integer.class, userId.toString(), productType);
     }
 
+    // Сумма списаний (WITHDRAW) по типу продукта
     public int getWithdrawalSumByProductType(UUID userId, String productType) {
         String sql = """
-            SELECT COALESCE(SUM(t.amount), 0)
-            FROM transactions t
-            JOIN products p ON t.product_id = p.id
-            WHERE t.user_id = ? AND t."TYPE" = 'WITHDRAWAL' AND p.type = ?
+            SELECT COALESCE(SUM(amount), 0)
+            FROM transactions
+            WHERE user_id = ? AND transaction_type = 'WITHDRAW' AND product_type = ?
         """;
         return jdbcTemplate.queryForObject(sql, Integer.class, userId.toString(), productType);
     }
 
+    // Проверка, есть ли у пользователя транзакции по заданному типу продукта
     public boolean userHasProductOfType(UUID userId, String productType) {
         String sql = """
             SELECT COUNT(*)
-            FROM transactions t
-            JOIN products p ON t.product_id = p.id
-            WHERE t.user_id = ? AND p.type = ?
+            FROM transactions
+            WHERE user_id = ? AND product_type = ?
         """;
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, userId.toString(), productType);
         return count != null && count > 0;
     }
-
 }
