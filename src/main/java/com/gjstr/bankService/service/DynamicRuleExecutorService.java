@@ -4,12 +4,15 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gjstr.bankService.dto.RuleQuery;
 import com.gjstr.bankService.entity.DynamicRule;
+import com.gjstr.bankService.entity.User;
 import com.gjstr.bankService.enums.ProductType;
 import com.gjstr.bankService.enums.TransactionType;
 import com.gjstr.bankService.repository.KnowledgeBaseRepository;
+import com.gjstr.bankService.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -17,10 +20,17 @@ public class DynamicRuleExecutorService {
 
     private final KnowledgeBaseRepository knowledgeBaseRepository;
     private final ObjectMapper objectMapper;
+    private final RuleStatsService ruleStatsService;
+    private final UserRepository userRepository;
 
-    public DynamicRuleExecutorService(KnowledgeBaseRepository knowledgeBaseRepository, ObjectMapper objectMapper) {
+    public DynamicRuleExecutorService(KnowledgeBaseRepository knowledgeBaseRepository,
+                                      ObjectMapper objectMapper,
+                                      RuleStatsService ruleStatsService,
+                                      UserRepository userRepository) {
         this.knowledgeBaseRepository = knowledgeBaseRepository;
         this.objectMapper = objectMapper;
+        this.ruleStatsService = ruleStatsService;
+        this.userRepository = userRepository;
     }
 
     public boolean evaluateRule(DynamicRule rule, UUID userId) {
@@ -40,14 +50,16 @@ public class DynamicRuleExecutorService {
             }
 
             System.out.println("Все правила выполнены -> продукт будет рекомендован");
+
+            ruleStatsService.increment(rule.getId());
             return true;
+
         } catch (Exception e) {
             System.err.println(" Ошибка при выполнении правила: " + rule.getRule());
             e.printStackTrace();
             throw new RuntimeException("Ошибка при выполнении правила: " + rule.getRule(), e);
         }
     }
-
 
     private boolean evaluateQuery(RuleQuery query, UUID userId) {
         boolean result;
@@ -74,6 +86,11 @@ public class DynamicRuleExecutorService {
             default -> throw new IllegalArgumentException("Неизвестный тип запроса: " + query.getQuery());
         }
 
-        return query.isNegate() ? !result : result; // применяем negate
+        return query.isNegate() ? !result : result;
+    }
+
+    public UUID getUserIdByUsername(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        return user.map(User::getId).orElse(null);
     }
 }

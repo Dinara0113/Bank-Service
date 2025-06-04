@@ -9,6 +9,7 @@ import java.util.Optional;
 @Service
 public class DynamicRuleService {
     private final DynamicRuleRepository repository;
+    private DynamicRuleService ruleStatsService;
 
     public DynamicRuleService(DynamicRuleRepository repository) {
         this.repository = repository;
@@ -32,6 +33,6 @@ public class DynamicRuleService {
     }
 
     public void deleteRule(Long id) {
-        repository.deleteById(id);
+        ruleStatsService.deleteRule(id);
     }
 }
