@@ -8,7 +8,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Component
-public class SimpleCreditRule implements RecommendationRuleSet{
+public class SimpleCreditRule implements RecommendationRuleSet {
+
     private final RecommendationsRepository repository;
 
     public SimpleCreditRule(RecommendationsRepository repository) {
@@ -18,13 +19,13 @@ public class SimpleCreditRule implements RecommendationRuleSet{
     @Override
     public Optional<RecommendationDto> evaluate(UUID userId) {
         boolean hasCredit = repository.userHasProductOfType(userId, "CREDIT");
-        int debitDeposit = repository.getDepositSumByProductType(userId, "DEBIT");
-        int debitWithdrawal = repository.getWithdrawalSumByProductType(userId, "DEBIT");
+        int debitDeposits = repository.getDepositSumByProductType(userId, "DEBIT");
+        int debitWithdrawals = repository.getWithdrawalSumByProductType(userId, "DEBIT");
 
-        boolean debitPositiveBalance = debitDeposit > debitWithdrawal;
-        boolean debitSpentEnough = debitWithdrawal > 100_000;
+        boolean positiveBalance = debitDeposits > debitWithdrawals;
+        boolean hasSpentEnough = debitWithdrawals > 100_000;
 
-        if (!hasCredit && debitPositiveBalance && debitSpentEnough) {
+        if (!hasCredit && positiveBalance && hasSpentEnough) {
             return Optional.of(new RecommendationDto(
                     UUID.fromString("ab138afb-f3ba-4a93-b74f-0fcee86d447f"),
                     "Простой кредит",
