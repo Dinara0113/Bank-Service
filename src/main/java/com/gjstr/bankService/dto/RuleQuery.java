@@ -7,7 +7,6 @@ public class RuleQuery {
     private List<String> arguments;
     private boolean negate;
 
-    // Обязательно добавь геттеры/сеттеры!
     public String getQuery() {
         return query;
     }

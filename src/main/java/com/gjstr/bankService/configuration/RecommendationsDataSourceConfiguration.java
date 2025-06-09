@@ -8,6 +8,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+
+/**
+ * Конфигурация подключения к H2-базе с read-only правами для рекомендаций.
+ */
 @Configuration
 public class RecommendationsDataSourceConfiguration {
     @Bean(name = "recommendationsDataSource")

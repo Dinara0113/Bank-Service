@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Сервис для исполнения JSON-правил из базы данных на основе бизнес-логики.
+ */
 @Service
 public class DynamicRuleExecutorService {
 
@@ -33,6 +36,9 @@ public class DynamicRuleExecutorService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Возвращает true, если все подправила DynamicRule выполнились для данного пользователя.
+     */
     public boolean evaluateRule(DynamicRule rule, UUID userId) {
         try {
             System.out.println("Проверка правила для продукта: " + rule.getProductName());
@@ -61,6 +67,9 @@ public class DynamicRuleExecutorService {
         }
     }
 
+    /**
+     * Преобразует RuleQuery и вызывает соответствующий метод репозитория знаний.
+     */
     private boolean evaluateQuery(RuleQuery query, UUID userId) {
         boolean result;
 
@@ -89,6 +98,9 @@ public class DynamicRuleExecutorService {
         return query.isNegate() ? !result : result;
     }
 
+    /**
+     * Получает UUID пользователя по имени.
+     */
     public UUID getUserIdByUsername(String username) {
         Optional<User> user = userRepository.findByUsername(username);
         return user.map(User::getId).orElse(null);

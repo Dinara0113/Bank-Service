@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * Сервис CRUD-операций с DynamicRule и очисткой статистики при удалении.
+ */
 @Service
 public class DynamicRuleService {
     private final DynamicRuleRepository repository;

@@ -14,6 +14,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+/**
+ * Основной сервис, объединяющий все типы рекомендаций (фиксированные и динамические).
+ */
 @Service
 public class RecommendationService {
 
@@ -35,6 +38,9 @@ public class RecommendationService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Возвращает все рекомендации для пользователя.
+     */
     public List<RecommendationDto> getRecommendations(UUID userId) {
         // Получаем фиксированные рекомендации
         List<RecommendationDto> fixedRecommendations = ruleSets.stream()
@@ -58,6 +64,10 @@ public class RecommendationService {
         fixedRecommendations.addAll(dynamicRecommendations);
         return fixedRecommendations;
     }
+
+    /**
+     * Генерирует сообщение для Telegram по имени пользователя.
+     */
     public String getRecommendationTextForTelegram(String username) {
         Optional<User> userOpt = userRepository.findByUsername(username);
 

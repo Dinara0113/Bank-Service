@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+/**
+ * Сервис управления статистикой срабатываний правил.
+ */
 @Service
 public class RuleStatsService {
 

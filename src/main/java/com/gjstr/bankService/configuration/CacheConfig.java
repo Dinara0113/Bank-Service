@@ -7,6 +7,9 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Конфигурация кеша Caffeine.
+ */
 @Configuration
 public class CacheConfig {
 
