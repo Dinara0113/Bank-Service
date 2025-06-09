@@ -7,5 +7,7 @@
 
     <include file="db/changelog/20250530100000_create_dynamic_rules_table.xml"/>
     <include file="db/changelog/20250530180000_create_transactions_table.xml"/>
+    <include file="db/changelog/20250604120000_create_rule_stats_table.xml"/>
+    <include file="db/changelog/2025-06-05-create-users-table.xml"/>
 
 </databaseChangeLog>
